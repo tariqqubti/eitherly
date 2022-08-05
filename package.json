@@ -11,7 +11,7 @@
   "scripts": {
     "prepublish": "tsc"
   },
-  "keywords": [],
+  "keywords": ["either", "maybe", "future", "monad", "haskell", "type", "class", "lazy", "purescript"],
   "author": "Tariq Qubti <tariq.qubti@gmail.com>",
   "license": "ISC",
   "devDependencies": {
