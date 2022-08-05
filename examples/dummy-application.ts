@@ -96,20 +96,32 @@ const planets: Planet[] = [
 ]
 
 export async function main() {
+  const peopleConnection = new Connection('people', people, true)
+  const planetsConnection = new Connection('planets', planets, true)
   const userService = new PersonService(
-    new PersonRepo(new Collection(new Connection('people', people, true))),
-    new PlanetRepo(new Collection(new Connection('planets', planets, false))),
+    new PersonRepo(new Collection(peopleConnection)),
+    new PlanetRepo(new Collection(planetsConnection)),
   )
-  const planet = await userService.findPersonsPlanet(42).run()
-  planet.use(
-    left => console.error(left), // people/planets disconnected
-    right => console.log(right), // { id: 100, name: 'Betelgeuse Five' }
-  )
-  const userPlanet = await userService.findPersonsPlanetWithPerson(44).run()
-  userPlanet.use(
-    left => console.error(left), // people/planets disconnected
-    right => console.log(right), // { id: 44, name: 'Trillian', planetId: 101, planet: { id: 101, name: 'Earth' } }
-  )
+  await userService.findPersonsPlanet(42)
+    .map(console.log) // { id: 100, name: 'Betelgeuse Five' }
+    .mapL(console.error)
+    .run()
+  await userService.findPersonsPlanetWithPerson(44)
+    .map(console.log) // { id: 44, name: 'Trillian', planetId: 101, planet: { id: 101, name: 'Earth' } }
+    .mapL(console.error)
+    .run()
+  
+  // Something went wrong
+  planetsConnection.connected = false
+
+  await userService.findPersonsPlanet(42)
+    .map(console.log)
+    .mapL(console.error) // planets disconnected
+    .run()
+  await userService.findPersonsPlanetWithPerson(44)
+    .map(console.log)
+    .mapL(console.error) // planets disconnected
+    .run()
 }
 
 main()
