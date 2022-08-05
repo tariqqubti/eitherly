@@ -1,0 +1,16 @@
+{
+  "name": "type-class",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepublish": "tsc"
+  },
+  "keywords": [],
+  "author": "Tariq Qubti <tariq.qubti@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  }
+}
