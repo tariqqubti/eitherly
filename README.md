@@ -37,10 +37,13 @@ function isMyNumber(value: unknown): Either<string, number> {
 
 ## Examples
 
+Dummy Application using only `Future` [example](examples/dummy-application-no-nesting.ts)
+
 Maybe [example](examples/maybe.ts)
 
 Either [example](examples/either.ts)
 
 Future [example](examples/future.ts)
 
-Dummy Application [example](examples/dummy-application.ts)
+Dummy Application nesting a `Maybe` in a `Future` [example](examples/dummy-application.ts)
+

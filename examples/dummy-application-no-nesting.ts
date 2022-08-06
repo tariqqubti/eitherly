@@ -1,4 +1,4 @@
-import { Future, tryFuture, fromNullable, Maybe } from "../src/index";
+import { Future, tryFuture } from "../src/index";
 
 // Impure
 
@@ -36,10 +36,9 @@ class PersonRepo {
   constructor(
     readonly collection: Collection<Person>,
   ) {}
-  findById(id: number): Future<string, Maybe<Person>> {
+  findById(id: number): Future<unknown, Person> {
     return tryFuture(() => this.collection.findOne(person => person.id === id))
-      .map(fromNullable)
-      .mapL(err => typeof err === 'string' ? err : 'Unknown error')
+      .chain(Future.fromNullable('Not found'))
   }
 }
 
@@ -52,10 +51,9 @@ class PlanetRepo {
   constructor(
     readonly collection: Collection<Planet>,
   ) {}
-  findById(id: number): Future<string, Maybe<Planet>> {
+  findById(id: number): Future<unknown, Planet> {
     return tryFuture(() => this.collection.findOne(planet => planet.id === id))
-      .map(fromNullable)
-      .mapL(err => typeof err === 'string' ? err : 'Unknown error')
+      .chain(Future.fromNullable('Not found'))
   }
 }
 
@@ -64,20 +62,16 @@ class PersonService {
     readonly personRepo: PersonRepo,
     readonly planetRepo: PlanetRepo,
   ) {}
-  findPersonsPlanet(personId: number): Future<string, Planet> {
+  findPersonsPlanet(personId: number): Future<unknown, Planet> {
     return this.personRepo.findById(personId)
-      .chain(maybe => maybe.toEither('Person not found').toFuture()) // Maybe -> Future
       .chain(person => this.planetRepo.findById(person.planetId))
-      .chain(maybe => maybe.toEither('Planet not found').toFuture()) // Maybe -> Future
   }
-  findPersonsPlanetWithPerson(personId: number): Future<string, Person & {planet: Planet}> {
+  findPersonsPlanetWithPerson(personId: number): Future<unknown, Person & {planet: Planet}> {
     return this.personRepo.findById(personId)
-      .chain(maybe => maybe.toEither('Person not found').toFuture()) // Maybe -> Future
       .chain(
         person => this.planetRepo.findById(person.planetId)
-          .map(maybe => maybe.map(planet => ({...person, planet})))
+          .map(planet => ({...person, planet}))
       )
-      .chain(maybe => maybe.toEither('Planet not found').toFuture()) // Maybe -> Future
   }
 }
 

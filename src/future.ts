@@ -4,6 +4,17 @@ export class Future<L, R> {
   constructor(
     readonly run: () => Promise<Either<L, R>>
   ) {}
+  static resolve<L, R>(right: R): Future<L, R> {
+    return new Future(async () => new Right(right))
+  }
+  static reject<L, R>(left: L): Future<L, R> {
+    return new Future(async () => new Left(left))
+  }
+  static fromNullable<L, R>(left: L) {
+    return function(right: R | null | undefined): Future<L, R> {
+      return new Future(async () => right ? new Right(right) : new Left(left))
+    }
+  }
   map<R_>(f: (t: R) => R_): Future<L, R_> {
     return new Future(
       async () => (await this.run()).map(f)
