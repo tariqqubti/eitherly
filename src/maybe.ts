@@ -15,6 +15,9 @@ export class None<T> {
   chain<U>(f: (t: T) => Maybe<U>): Maybe<U> {
     return this as any as None<U>
   }
+  ap<U>(f: Maybe<(t: T) => U>): Maybe<U> {
+    return this as any as None<U>
+  }
   toEither<L>(left: L): Either<L, T> {
     return new Left(left)
   }
@@ -35,6 +38,9 @@ export class Some<T> {
   }
   chain<U>(f: (t: T) => Maybe<U>): Maybe<U> {
     return f(this.value)
+  }
+  ap<U>(f: Maybe<(t: T) => U>): Maybe<U> {
+    return f.map(f_ => f_(this.value))
   }
   toEither<L>(left: L): Either<L, T> {
     return new Right(this.value)

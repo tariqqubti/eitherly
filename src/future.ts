@@ -30,6 +30,16 @@ export class Future<L, R> {
       }
     )
   }
+  ap<R_>(f: Future<L, (r: R) => R_>): Future<L, R_> {
+    return new Future(
+      async () => {
+        const either = await this.run()
+        if(either.isLeft())
+          return either as any as Either<L, R_>
+        return f.map(f_ => f_(either.right)).run()
+      }
+    )
+  }
   mapL<L_>(f: (t: L) => L_): Future<L_, R> {
     return new Future(
       async () => (await this.run()).mapL(f)
@@ -42,6 +52,16 @@ export class Future<L, R> {
         if(either.isRight())
           return either as any as Either<L_, R>
         return f(either.left).run()
+      }
+    )
+  }
+  apL<L_>(f: Future<(l: L) => L_, R>): Future<L_, R> {
+    return new Future(
+      async () => {
+        const either = await this.run()
+        if(either.isRight())
+          return either as any as Either<L_, R>
+        return f.mapL(f_ => f_(either.left)).run()
       }
     )
   }

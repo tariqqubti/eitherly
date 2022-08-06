@@ -18,11 +18,17 @@ export class Left<L, R> {
   chain<R_>(f: (r: R) => Either<L, R_>): Either<L, R_> {
     return this as any as Left<L, R_>
   }
+  ap<R_>(f: Either<L, (r: R) => R_>): Either<L, R_> {
+    return this as any as Left<L, R_>
+  }
   mapL<L_>(f: (l: L) => L_): Either<L_, R> {
     return new Left(f(this.left))
   }
   chainL<L_>(f: (l: L) => Either<L_, R>): Either<L_, R> {
     return f(this.left)
+  }
+  apL<L_>(f: Either<(l: L) => L_, R>): Either<L_, R> {
+    return f.mapL(f_ => f_(this.left))
   }
   leftOr(or: L): L {
     return this.left
@@ -54,10 +60,16 @@ export class Right<L, R> {
   chain<R_>(f: (r: R) => Either<L, R_>): Either<L, R_> {
     return f(this.right)
   }
+  ap<R_>(f: Either<L, (r: R) => R_>): Either<L, R_> {
+    return f.map(f_ => f_(this.right))
+  }
   mapL<L_>(f: (l: L) => L_): Either<L_, R> {
     return this as any as Right<L_, R>
   }
   chainL<L_>(f: (l: L) => Either<L_, R>): Either<L_, R> {
+    return this as any as Right<L_, R>
+  }
+  apL<L_>(f: Either<(l: L) => L_, R>): Either<L_, R> {
     return this as any as Right<L_, R>
   }
   leftOr(or: L): L {
