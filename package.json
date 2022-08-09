@@ -1,6 +1,6 @@
 {
   "name": "type-class",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,7 +9,7 @@
     "url": "https://github.com/tariqqubti/type-class"
   },
   "scripts": {
-    "prepublish": "tsc"
+    "prepare": "tsc"
   },
   "keywords": ["either", "maybe", "future", "monad", "haskell", "type", "class", "lazy", "purescript"],
   "author": "Tariq Qubti <tariq.qubti@gmail.com>",
