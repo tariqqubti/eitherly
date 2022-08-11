@@ -3,7 +3,7 @@
     "strict": true,
     "target": "ESNext",
     "declaration": true,
-    "outDir": "dist"
+    "outDir": "./dist",
   },
-  "include": ["src"]
+  "include": ["./src"]
 }
