@@ -11,39 +11,41 @@ npm install type-class
 ```
 
 ```typescript
-import { tryFuture, Either, Left, Right } from "type-class"
+import { AsyncResult, tryAsyncResult } from "../src/index";
 
-const future = tryFuture(() => Promise.resolve(42))
+const goodQuestion = 'The Answer to the Ultimate Question of Life, the Universe, and Everything?'
+const badQuestion = 'What is that?'
 
-function isNumber(value: unknown): Either<string, number> {
-  return typeof value === 'number'
-    ? new Right(value)
-    : new Left('Not a number')
+async function impureAnswer(question: string): Promise<number> {
+  if(question === goodQuestion)
+    return 42
+  throw 'Wrong question'
 }
 
-function isBetween(min: number, max: number) {
-  return function(value: number): Either<string, number> {
-    return value >= min && value <= max
-      ? new Right(value)
-      : new Left(`${value} is not between ${min} and ${max}`)
-  }
+function pureAnswer(question: string): AsyncResult<number> {
+  return tryAsyncResult(() => impureAnswer(question))
 }
 
-function isMyNumber(value: unknown): Either<string, number> {
-  return isNumber(value)
-    .chain(isBetween(40, 45))
-}
+pureAnswer(goodQuestion)
+  .map(console.log) // 42
+  .mapL(console.error)
+  .run()
+pureAnswer(badQuestion)
+  .map(console.log)
+  .mapL(console.error) // Wrong question
+  .run()
+
 ```
 
 ## Examples
 
-Dummy Application using only `Future` [example](examples/dummy-application-no-nesting.ts)
+Dummy Application using only `AsyncResult` (i.e. `AsyncEither`) [example](examples/dummy-application-no-nesting.ts)
 
 Maybe [example](examples/maybe.ts)
 
 Either [example](examples/either.ts)
 
-Future [example](examples/future.ts)
+AsyncEither [example](examples/async-either.ts)
 
-Dummy Application nesting a `Maybe` in a `Future` [example](examples/dummy-application.ts)
+Dummy Application nesting a `Maybe` in a `AsyncEither` [example](examples/dummy-application.ts)
 

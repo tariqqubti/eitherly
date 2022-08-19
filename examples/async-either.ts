@@ -1,4 +1,4 @@
-import { Future, tryFuture } from "../src/future";
+import { AsyncResult, tryAsyncResult } from "../src/index";
 
 const goodQuestion = 'The Answer to the Ultimate Question of Life, the Universe, and Everything?'
 const badQuestion = 'What is that?'
@@ -9,9 +9,8 @@ async function impureAnswer(question: string): Promise<number> {
   throw 'Wrong question'
 }
 
-function pureAnswer(question: string): Future<string, number> {
-  return tryFuture(() => impureAnswer(question))
-    .mapL(err => typeof err === 'string' ? err : 'Unknown error')
+function pureAnswer(question: string): AsyncResult<number> {
+  return tryAsyncResult(() => impureAnswer(question))
 }
 
 pureAnswer(goodQuestion)

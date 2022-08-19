@@ -2,7 +2,17 @@ import { Either, Left, Right } from "./either"
 
 export type Maybe<T> = None<T> | Some<T>
 
-export class None<T> {
+export interface MaybeContract<T> {
+  isNone(): this is None<T>
+  isSome(): this is Some<T>
+  map<U>(f: (t: T) => U): Maybe<U>
+  chain<U>(f: (t: T) => Maybe<U>): Maybe<U>
+  someOr(t: T): T
+  use<U>(onNone: () => U, onSome: (t: T) => U): U
+  toEither<L>(left: L): Either<L, T>
+}
+
+export class None<T> implements MaybeContract<T> {
   isNone(): this is None<T> {
     return true
   }
@@ -15,15 +25,18 @@ export class None<T> {
   chain<U>(f: (t: T) => Maybe<U>): Maybe<U> {
     return this as any as None<U>
   }
-  ap<U>(f: Maybe<(t: T) => U>): Maybe<U> {
-    return this as any as None<U>
+  someOr(t: T): T {
+    return t
+  }
+  use<U>(onNone: () => U, onSome: (t: T) => U): U {
+    return onNone()
   }
   toEither<L>(left: L): Either<L, T> {
     return new Left(left)
   }
 }
 
-export class Some<T> {
+export class Some<T> implements MaybeContract<T> {
   constructor(
     readonly value: T,
   ) {}
@@ -39,8 +52,11 @@ export class Some<T> {
   chain<U>(f: (t: T) => Maybe<U>): Maybe<U> {
     return f(this.value)
   }
-  ap<U>(f: Maybe<(t: T) => U>): Maybe<U> {
-    return f.map(f_ => f_(this.value))
+  someOr(t: T): T {
+    return this.value
+  }
+  use<U>(onNone: () => U, onSome: (t: T) => U): U {
+    return onSome(this.value)
   }
   toEither<L>(left: L): Either<L, T> {
     return new Right(this.value)

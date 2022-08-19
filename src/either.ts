@@ -1,8 +1,21 @@
-import { Future } from "./future"
+import { AsyncEither } from "./async-either"
 
 export type Either<L, R> = Left<L, R> | Right<L, R>
 
-export class Left<L, R> {
+export interface EitherContract<L, R> {
+  isLeft(): this is Left<L, R>
+  isRight(): this is Right<L, R>
+  map<R_>(f: (r: R) => R_): Either<L, R_>
+  chain<R_>(f: (r: R) => Either<L, R_>): Either<L, R_>
+  mapL<L_>(f: (l: L) => L_): Either<L_, R>
+  chainL<L_>(f: (l: L) => Either<L_, R>): Either<L_, R>
+  leftOr(or: L): L
+  rightOr(or: R): R
+  use<T>(onLeft: (l: L) => T, onRight: (r: R) => T): T
+  toAsync(): AsyncEither<L, R>
+}
+
+export class Left<L, R> implements EitherContract<L, R> {
   constructor(
     readonly left: L,
   ) {}
@@ -18,17 +31,11 @@ export class Left<L, R> {
   chain<R_>(f: (r: R) => Either<L, R_>): Either<L, R_> {
     return this as any as Left<L, R_>
   }
-  ap<R_>(f: Either<L, (r: R) => R_>): Either<L, R_> {
-    return this as any as Left<L, R_>
-  }
   mapL<L_>(f: (l: L) => L_): Either<L_, R> {
     return new Left(f(this.left))
   }
   chainL<L_>(f: (l: L) => Either<L_, R>): Either<L_, R> {
     return f(this.left)
-  }
-  apL<L_>(f: Either<(l: L) => L_, R>): Either<L_, R> {
-    return f.mapL(f_ => f_(this.left))
   }
   leftOr(or: L): L {
     return this.left
@@ -36,15 +43,15 @@ export class Left<L, R> {
   rightOr(or: R): R {
     return or
   }
-  use<T>(onLeft: (l: L) => T, onRight: (r: R) => T) {
+  use<T>(onLeft: (l: L) => T, onRight: (r: R) => T): T {
     return onLeft(this.left)
   }
-  toFuture(): Future<L, R> {
-    return new Future(async () => this)
+  toAsync(): AsyncEither<L, R> {
+    return new AsyncEither(async () => this)
   }
 }
 
-export class Right<L, R> {
+export class Right<L, R> implements EitherContract<L, R> {
   constructor(
     readonly right: R,
   ) {}
@@ -60,16 +67,10 @@ export class Right<L, R> {
   chain<R_>(f: (r: R) => Either<L, R_>): Either<L, R_> {
     return f(this.right)
   }
-  ap<R_>(f: Either<L, (r: R) => R_>): Either<L, R_> {
-    return f.map(f_ => f_(this.right))
-  }
   mapL<L_>(f: (l: L) => L_): Either<L_, R> {
     return this as any as Right<L_, R>
   }
   chainL<L_>(f: (l: L) => Either<L_, R>): Either<L_, R> {
-    return this as any as Right<L_, R>
-  }
-  apL<L_>(f: Either<(l: L) => L_, R>): Either<L_, R> {
     return this as any as Right<L_, R>
   }
   leftOr(or: L): L {
@@ -78,15 +79,17 @@ export class Right<L, R> {
   rightOr(or: R): R {
     return this.right
   }
-  use<T>(onLeft: (l: L) => T, onRight: (r: R) => T) {
+  use<T>(onLeft: (l: L) => T, onRight: (r: R) => T): T {
     return onRight(this.right)
   }
-  toFuture(): Future<L, R> {
-    return new Future(async () => this)
+  toAsync(): AsyncEither<L, R> {
+    return new AsyncEither(async () => this)
   }
 }
 
-export function tryEither<T>(f: () => T): Either<unknown, T> {
+export type Result<T> = Either<unknown, T>
+
+export function tryResult<T>(f: () => T): Result<T> {
   try {
     return new Right(f())
   } catch(error) {

@@ -1,3 +1,3 @@
 export * from "./maybe"
 export * from "./either"
-export * from "./future"
+export * from "./async-either"

@@ -1,4 +1,4 @@
-import { Future, tryFuture } from "../src/index";
+import { AsyncEither, AsyncResult, tryAsyncResult } from "../src/index"
 
 // Impure
 
@@ -36,9 +36,9 @@ class PersonRepo {
   constructor(
     readonly collection: Collection<Person>,
   ) {}
-  findById(id: number): Future<unknown, Person> {
-    return tryFuture(() => this.collection.findOne(person => person.id === id))
-      .chain(Future.fromNullable('Not found'))
+  findById(id: number): AsyncResult<Person> {
+    return tryAsyncResult(() => this.collection.findOne(person => person.id === id))
+      .chain(AsyncEither.fromNullable('Not found'))
   }
 }
 
@@ -51,9 +51,9 @@ class PlanetRepo {
   constructor(
     readonly collection: Collection<Planet>,
   ) {}
-  findById(id: number): Future<unknown, Planet> {
-    return tryFuture(() => this.collection.findOne(planet => planet.id === id))
-      .chain(Future.fromNullable('Not found'))
+  findById(id: number): AsyncResult<Planet> {
+    return tryAsyncResult(() => this.collection.findOne(planet => planet.id === id))
+      .chain(AsyncEither.fromNullable('Not found'))
   }
 }
 
@@ -62,11 +62,11 @@ class PersonService {
     readonly personRepo: PersonRepo,
     readonly planetRepo: PlanetRepo,
   ) {}
-  findPersonsPlanet(personId: number): Future<unknown, Planet> {
+  findPersonsPlanet(personId: number): AsyncResult<Planet> {
     return this.personRepo.findById(personId)
       .chain(person => this.planetRepo.findById(person.planetId))
   }
-  findPersonsPlanetWithPerson(personId: number): Future<unknown, Person & {planet: Planet}> {
+  findPersonsPlanetWithPerson(personId: number): AsyncResult<Person & {planet: Planet}> {
     return this.personRepo.findById(personId)
       .chain(
         person => this.planetRepo.findById(person.planetId)

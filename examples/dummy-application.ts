@@ -1,4 +1,4 @@
-import { Future, tryFuture, fromNullable, Maybe } from "../src/index";
+import { AsyncResult, tryAsyncResult, fromNullable, Maybe } from "../src/index";
 
 // Impure
 
@@ -36,10 +36,9 @@ class PersonRepo {
   constructor(
     readonly collection: Collection<Person>,
   ) {}
-  findById(id: number): Future<string, Maybe<Person>> {
-    return tryFuture(() => this.collection.findOne(person => person.id === id))
+  findById(id: number): AsyncResult<Maybe<Person>> {
+    return tryAsyncResult(() => this.collection.findOne(person => person.id === id))
       .map(fromNullable)
-      .mapL(err => typeof err === 'string' ? err : 'Unknown error')
   }
 }
 
@@ -52,10 +51,9 @@ class PlanetRepo {
   constructor(
     readonly collection: Collection<Planet>,
   ) {}
-  findById(id: number): Future<string, Maybe<Planet>> {
-    return tryFuture(() => this.collection.findOne(planet => planet.id === id))
+  findById(id: number): AsyncResult<Maybe<Planet>> {
+    return tryAsyncResult(() => this.collection.findOne(planet => planet.id === id))
       .map(fromNullable)
-      .mapL(err => typeof err === 'string' ? err : 'Unknown error')
   }
 }
 
@@ -64,20 +62,20 @@ class PersonService {
     readonly personRepo: PersonRepo,
     readonly planetRepo: PlanetRepo,
   ) {}
-  findPersonsPlanet(personId: number): Future<string, Planet> {
+  findPersonsPlanet(personId: number): AsyncResult<Planet> {
     return this.personRepo.findById(personId)
-      .chain(maybe => maybe.toEither('Person not found').toFuture()) // Maybe -> Future
+      .chain(maybe => maybe.toEither('Person not found').toAsync()) // Maybe -> Future
       .chain(person => this.planetRepo.findById(person.planetId))
-      .chain(maybe => maybe.toEither('Planet not found').toFuture()) // Maybe -> Future
+      .chain(maybe => maybe.toEither('Planet not found').toAsync()) // Maybe -> Future
   }
-  findPersonsPlanetWithPerson(personId: number): Future<string, Person & {planet: Planet}> {
+  findPersonsPlanetWithPerson(personId: number): AsyncResult<Person & {planet: Planet}> {
     return this.personRepo.findById(personId)
-      .chain(maybe => maybe.toEither('Person not found').toFuture()) // Maybe -> Future
+      .chain(maybe => maybe.toEither('Person not found').toAsync()) // Maybe -> Future
       .chain(
         person => this.planetRepo.findById(person.planetId)
           .map(maybe => maybe.map(planet => ({...person, planet})))
       )
-      .chain(maybe => maybe.toEither('Planet not found').toFuture()) // Maybe -> Future
+      .chain(maybe => maybe.toEither('Planet not found').toAsync()) // Maybe -> Future
   }
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "type-class",
-  "version": "1.0.12",
+  "version": "2.0.1",
   "description": "",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -11,7 +11,7 @@
   "scripts": {
     "prepare": "tsc"
   },
-  "keywords": ["either", "maybe", "future", "monad", "haskell", "type", "class", "lazy", "purescript"],
+  "keywords": ["either", "maybe", "future", "promise", "functor", "monad", "haskell", "type", "class", "lazy", "purescript"],
   "author": "Tariq Qubti <tariq.qubti@gmail.com>",
   "license": "ISC",
   "devDependencies": {

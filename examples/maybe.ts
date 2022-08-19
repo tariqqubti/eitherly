@@ -1,8 +1,10 @@
-import { Maybe, None, Some } from "../src/maybe";
+import { fromNullable, Maybe } from "../src/index";
 
-function isOdd(value: number): Maybe<number> {
-  return value % 2 === 0 ? new None : new Some(value)
+function elementAt<T>(index: number) {
+  return function(array: T[]): Maybe<T> {
+    return fromNullable(array[index])
+  }
 }
 
-console.log(isOdd(3)) // Some { value: 3 }
-console.log(isOdd(4)) // None {}
+console.log(elementAt(2)([1, 2, 3])) // Some { value: 3 }
+console.log(elementAt(42)([1, 2, 3])) // None {}
