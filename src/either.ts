@@ -96,3 +96,21 @@ export function tryResult<T>(f: () => T): Result<T> {
     return new Left(error)
   }
 }
+
+export function everyRight<E, T>(
+  es: {[P in keyof T]: Either<E, T[P]>}
+): Either<{[P in keyof T]?: E}, {[P in keyof T]: T[P]}> {
+  const lefts: {[P in keyof T]?: E} = {}
+  const rights = {} as {[P in keyof T]: T[P]}
+  const keys = Object.keys(es) as (keyof T)[]
+  for(const key of keys) {
+    const e = es[key]
+    if(e.isLeft())
+      lefts[key] = e.left
+    else
+      rights[key] = e.right
+  }
+  if(Object.keys(lefts).length)
+    return new Left(lefts)
+  return new Right(rights)
+}
