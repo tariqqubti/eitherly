@@ -1,5 +1,5 @@
 {
-  "name": "type-class",
+  "name": "eitherly",
   "version": "2.1.0",
   "description": "",
   "main": "./dist/index.js",
