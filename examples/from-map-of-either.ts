@@ -1,15 +1,15 @@
-import { everyRight, Left, Result, Right } from "../src/either"
+import { Either, fromMapOfEither, Left, Right } from "../src/either"
 
-export function str(value: unknown): Result<string> {
+export function str(value: unknown): Either<string, string> {
   return typeof value === 'string' ? new Right(value) : new Left('Must be a string')
 }
 
-export function num(value: unknown): Result<number> {
+export function num(value: unknown): Either<string, number> {
   return typeof value === 'number' ? new Right(value) : new Left('Must be a string')
 }
 
 export function validate(name: unknown, age: unknown) {
-  return everyRight({
+  return fromMapOfEither({
     name: str(name),
     age: num(age),
   })

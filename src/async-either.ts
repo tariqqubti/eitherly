@@ -47,9 +47,7 @@ export class AsyncEither<L, R> {
   }
 }
 
-export type AsyncResult<T> = AsyncEither<unknown, T>
-
-export function tryAsyncResult<R>(f: () => Promise<R>): AsyncResult<R> {
+export function tryAsyncEither<R>(f: () => Promise<R>): AsyncEither<unknown, R> {
   return new AsyncEither(async () => {
     try {
       return new Right(await f())

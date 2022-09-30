@@ -87,9 +87,7 @@ export class Right<L, R> implements EitherContract<L, R> {
   }
 }
 
-export type Result<T> = Either<unknown, T>
-
-export function tryResult<T>(f: () => T): Result<T> {
+export function tryEither<T>(f: () => T): Either<unknown, T> {
   try {
     return new Right(f())
   } catch(error) {
@@ -97,18 +95,18 @@ export function tryResult<T>(f: () => T): Result<T> {
   }
 }
 
-export function everyRight<E, T>(
-  es: {[P in keyof T]: Either<E, T[P]>}
+export function fromMapOfEither<E, T>(
+  mapOfEither: {[P in keyof T]: Either<E, T[P]>}
 ): Either<{[P in keyof T]?: E}, {[P in keyof T]: T[P]}> {
   const lefts: {[P in keyof T]?: E} = {}
   const rights = {} as {[P in keyof T]: T[P]}
-  const keys = Object.keys(es) as (keyof T)[]
+  const keys = Object.keys(mapOfEither) as (keyof T)[]
   for(const key of keys) {
-    const e = es[key]
-    if(e.isLeft())
-      lefts[key] = e.left
+    const either = mapOfEither[key]
+    if(either.isLeft())
+      lefts[key] = either.left
     else
-      rights[key] = e.right
+      rights[key] = either.right
   }
   if(Object.keys(lefts).length)
     return new Left(lefts)

@@ -2,45 +2,24 @@
 
 ## Overview
 
-Helpful type classes for TypeScript
+Either type in TypeScript
+
+## Why
+
+- Express side-effects properly
+- Replace Exceptions with `Either`, `AsyncEither` or `Result`
 
 ## Install
 
 ```
-npm install type-class
-```
-
-```typescript
-import { AsyncResult, tryAsyncResult } from "../src/index";
-
-const goodQuestion = 'The Answer to the Ultimate Question of Life, the Universe, and Everything?'
-const badQuestion = 'What is that?'
-
-async function impureAnswer(question: string): Promise<number> {
-  if(question === goodQuestion)
-    return 42
-  throw 'Wrong question'
-}
-
-function pureAnswer(question: string): AsyncResult<number> {
-  return tryAsyncResult(() => impureAnswer(question))
-}
-
-pureAnswer(goodQuestion)
-  .map(console.log) // 42
-  .mapL(console.error)
-  .run()
-pureAnswer(badQuestion)
-  .map(console.log)
-  .mapL(console.error) // Wrong question
-  .run()
-
+npm install eitherly
 ```
 
 ## Examples
 
-Dummy Application using only `AsyncResult` (i.e. `AsyncEither`) [example](examples/dummy-application-no-nesting.ts)
-
-Either [example](examples/either.ts)
-
-AsyncEither [example](examples/async-either.ts)
+- Result [example](examples/result.ts)
+- Result.`fromResults` [example](examples/from-results.ts)
+- Either [example](examples/either.ts)
+- Either`.fromMapOfEither` [example](examples/from-map-of-either.ts)
+- AsyncEither [example](examples/async-either.ts)
+- Dummy Application using only `AsyncEither` [example](examples/async-either-dummy-app.ts)
