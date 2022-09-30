@@ -1,4 +1,4 @@
-# Type Class
+# Eitherly
 
 ## Overview
 
@@ -41,11 +41,6 @@ pureAnswer(badQuestion)
 
 Dummy Application using only `AsyncResult` (i.e. `AsyncEither`) [example](examples/dummy-application-no-nesting.ts)
 
-Maybe [example](examples/maybe.ts)
-
 Either [example](examples/either.ts)
 
 AsyncEither [example](examples/async-either.ts)
-
-Dummy Application nesting a `Maybe` in a `AsyncEither` [example](examples/dummy-application.ts)
-
