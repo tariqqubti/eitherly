@@ -1,3 +1,5 @@
+import { Either, Left, Right } from "./either"
+
 /**
  * Simple type to use as a return value from an impure function
  * Example:
@@ -97,4 +99,14 @@ export function fromResults<T>(
   if(Object.keys(reasons).length)
     return new Err(reasons)
   return new Ok(values)
+}
+
+export function optional<T>(value: any, f: (t: any) => Result<T>): Result<T | null> {
+  if(value === undefined || value === null) return new Ok(null)
+  return f(value)
+}
+
+export function toEither<T>(result: Result<T>): Either<unknown, T> {
+  if(result.isErr()) return new Left(result.reason)
+  return new Right(result.value)
 }
