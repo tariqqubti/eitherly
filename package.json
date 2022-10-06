@@ -1,6 +1,6 @@
 {
   "name": "eitherly",
-  "version": "3.0.1",
+  "version": "3.0.3",
   "description": "",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -14,16 +14,13 @@
   "keywords": [
     "either",
     "result",
-    "maybe",
     "future",
     "promise",
     "functor",
     "monad",
-    "haskell",
     "type",
     "class",
-    "lazy",
-    "purescript"
+    "lazy"
   ],
   "author": "Tariq Qubti <tariq.qubti@gmail.com>",
   "license": "ISC",
