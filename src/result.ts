@@ -25,6 +25,11 @@ export class Ok<T> {
   }
 }
 
+export function valueOrThrow<T>(result: Result<T>): T {
+  if(result.isErr()) throw result.reason
+  return result.value
+}
+
 export function map<A, B>(f: (a: A) => B) {
   return function(result: Result<A>): Result<B> {
     if(result.isErr()) return result

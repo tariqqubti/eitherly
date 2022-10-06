@@ -11,6 +11,8 @@ export interface EitherContract<L, R> {
   chainL<L_>(f: (l: L) => Either<L_, R>): Either<L_, R>
   leftOr(or: L): L
   rightOr(or: R): R
+  leftOrThrow: L
+  rightOrThrow: R
   use<T>(onLeft: (l: L) => T, onRight: (r: R) => T): T
   toAsync(): AsyncEither<L, R>
 }
@@ -42,6 +44,12 @@ export class Left<L, R> implements EitherContract<L, R> {
   }
   rightOr(or: R): R {
     return or
+  }
+  get leftOrThrow(): L {
+    return this.left
+  }
+  get rightOrThrow(): R {
+    throw this.left
   }
   use<T>(onLeft: (l: L) => T, onRight: (r: R) => T): T {
     return onLeft(this.left)
@@ -77,6 +85,12 @@ export class Right<L, R> implements EitherContract<L, R> {
     return or
   }
   rightOr(or: R): R {
+    return this.right
+  }
+  get leftOrThrow(): L {
+    throw this.right
+  }
+  get rightOrThrow(): R {
     return this.right
   }
   use<T>(onLeft: (l: L) => T, onRight: (r: R) => T): T {
