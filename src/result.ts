@@ -89,7 +89,7 @@ export async function tryAsyncResult<T>(f: () => Promise<T>): Promise<Result<T>>
  * const form: Form = result.value
  * ```
  */
-export function collapse<T>(
+export function collapseResult<T>(
   results: {[P in keyof T]: Result<T[P]>}
 ): Result<{[P in keyof T]: T[P]}> {
   const reasons: {[P in keyof T]?: unknown} = {}

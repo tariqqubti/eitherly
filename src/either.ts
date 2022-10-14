@@ -109,7 +109,7 @@ export function tryEither<T>(f: () => T): Either<unknown, T> {
   }
 }
 
-export function collapse<E, T>(
+export function collapseEither<E, T>(
   eitherMap: {[P in keyof T]: Either<E, T[P]>}
 ): Either<{[P in keyof T]?: E}, {[P in keyof T]: T[P]}> {
   const lefts: {[P in keyof T]?: E} = {}
