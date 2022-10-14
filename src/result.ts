@@ -107,38 +107,6 @@ export function collapseResult<T>(
   return new Ok(values)
 }
 
-export function bool(value: unknown): Result<boolean> {
-  if(typeof value === 'boolean') return new Ok(value)
-  return new Err('Value must be a boolean')
-}
-
-export function num(value: unknown): Result<number> {
-  if(typeof value === 'number') return new Ok(value)
-  return new Err('Value must be a number')
-}
-
-export function str(value: unknown): Result<string> {
-  if(typeof value === 'string') return new Ok(value)
-  return new Err('Value must be a string')
-}
-
-export function arr(value: unknown): Result<Array<unknown>> {
-  if(Array.isArray(value)) return new Ok(value)
-  return new Err('Value must be an array')
-}
-
-export function obj(value: unknown): Result<object> {
-  if(value !== undefined && value !== null && typeof value === 'object') return new Ok(value)
-  return new Err('Value must be an object')
-}
-
-export function optional<T>(
-  value: unknown,
-  f: (t: boolean | number | string | symbol | bigint | object) => Result<T>
-): Result<T | null> {
-  if(value === undefined || value === null) return new Ok(null)
-  return f(value)
-}
 
 export function toEither<T>(result: Result<T>): Either<unknown, T> {
   if(result.isErr()) return new Left(result.reason)

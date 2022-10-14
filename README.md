@@ -23,3 +23,4 @@ npm install eitherly
 - Either`.collapse` [example](examples/collapse-either.ts)
 - AsyncEither [example](examples/async-either.ts)
 - Dummy Application using only `AsyncEither` [example](examples/async-either-dummy-app.ts)
+- Validation [examples](examples/validation.ts)
