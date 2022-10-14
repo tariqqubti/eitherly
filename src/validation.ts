@@ -69,6 +69,14 @@ export function optional<T>(
   return f(value)
 }
 
+export function len<T extends {length: number}>(min: number, max: number) {
+  return function(value: T): Either<string, T> {
+    return value.length >= min && value.length <= max
+      ? new Right(value)
+      : new Left(`Value length must be between ${min} and ${max}`)
+  }
+}
+
 /**
  * any: disable
  * unknown: all
