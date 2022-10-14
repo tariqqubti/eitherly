@@ -77,6 +77,14 @@ export function len<T extends {length: number}>(min: number, max: number) {
   }
 }
 
+export function test(pattern: RegExp) {
+  return function(value: string): Either<string, string> {
+    return pattern.test(value)
+      ? new Right(value)
+      : new Left(`Value did not pass ${pattern} test`)
+  }
+}
+
 /**
  * any: disable
  * unknown: all

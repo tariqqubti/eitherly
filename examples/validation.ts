@@ -1,4 +1,4 @@
-import { obj, has, str, len, arr } from "../src/validation"
+import { obj, has, str, len, arr, test } from "../src/validation"
 
 console.log(obj(undefined))
 console.log(obj(null))
@@ -18,3 +18,6 @@ console.log(str('foo').chain(len(5, 10)))
 console.log(str('foobar').chain(len(5, 10)))
 console.log(arr([1, 2, 3]).chain(len(1, 2)))
 console.log(arr([1, 2]).chain(len(1, 2)))
+
+console.log(str('foo').chain(test(/[0-9]/)))
+console.log(str('foo').chain(test(/foo/)))
