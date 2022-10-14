@@ -1,4 +1,4 @@
-import { Err, fromResults, Ok, Result } from "../src"
+import { Err, collapse, Ok, Result } from "../src/result"
 
 export function str(value: unknown): Result<string> {
   return typeof value === 'string' ? new Ok(value) : new Err('Must be a string')
@@ -9,7 +9,7 @@ export function num(value: unknown): Result<number> {
 }
 
 export function validate(name: unknown, age: unknown) {
-  return fromResults({
+  return collapse({
     name: str(name),
     age: num(age),
   })

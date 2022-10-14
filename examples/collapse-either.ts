@@ -1,4 +1,4 @@
-import { Either, fromMapOfEither, Left, Right } from "../src/either"
+import { Either, collapse, Left, Right } from "../src/either"
 
 export function str(value: unknown): Either<string, string> {
   return typeof value === 'string' ? new Right(value) : new Left('Must be a string')
@@ -9,7 +9,7 @@ export function num(value: unknown): Either<string, number> {
 }
 
 export function validate(name: unknown, age: unknown) {
-  return fromMapOfEither({
+  return collapse({
     name: str(name),
     age: num(age),
   })

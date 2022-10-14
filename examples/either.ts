@@ -1,4 +1,4 @@
-import { Left, Right, Either } from "../src/index"
+import { Left, Right, Either } from "../src/either"
 
 function isNumber(value: unknown): Either<string, number> {
   return typeof value === 'number' ? new Right(value) : new Left('Not a number')

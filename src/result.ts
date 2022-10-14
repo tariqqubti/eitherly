@@ -1,7 +1,8 @@
 import { Either, Left, Right } from "./either"
 
 /**
- * Simple type to use as a return value from an impure function
+ * Simple type to use as a return value from an impure function,
+ * it is less restrictive than `Either` and `Left` is always `unknown`
  * Example:
  * ```
  * function findCustomerById(id: string): Promise<Result<Customer | null>>
@@ -80,7 +81,7 @@ export async function tryAsyncResult<T>(f: () => Promise<T>): Promise<Result<T>>
  * Useful for form validation
  * Example:
  * ```
- * const result: Result<Form> = fromResults({
+ * const result: Result<Form> = collapse({
  *  name: validateName(body.name),
  *  age: validateAge(body.age)
  * })
@@ -88,7 +89,7 @@ export async function tryAsyncResult<T>(f: () => Promise<T>): Promise<Result<T>>
  * const form: Form = result.value
  * ```
  */
-export function fromResults<T>(
+export function collapse<T>(
   results: {[P in keyof T]: Result<T[P]>}
 ): Result<{[P in keyof T]: T[P]}> {
   const reasons: {[P in keyof T]?: unknown} = {}

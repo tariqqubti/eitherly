@@ -18,8 +18,8 @@ npm install eitherly
 ## Examples
 
 - Result [example](examples/result.ts)
-- Result.`fromResults` [example](examples/from-results.ts)
+- Result.`collapse` [example](examples/collapse-result.ts)
 - Either [example](examples/either.ts)
-- Either`.fromMapOfEither` [example](examples/from-map-of-either.ts)
+- Either`.collapse` [example](examples/collapse-either.ts)
 - AsyncEither [example](examples/async-either.ts)
 - Dummy Application using only `AsyncEither` [example](examples/async-either-dummy-app.ts)

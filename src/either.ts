@@ -109,14 +109,14 @@ export function tryEither<T>(f: () => T): Either<unknown, T> {
   }
 }
 
-export function fromMapOfEither<E, T>(
-  mapOfEither: {[P in keyof T]: Either<E, T[P]>}
+export function collapse<E, T>(
+  eitherMap: {[P in keyof T]: Either<E, T[P]>}
 ): Either<{[P in keyof T]?: E}, {[P in keyof T]: T[P]}> {
   const lefts: {[P in keyof T]?: E} = {}
   const rights = {} as {[P in keyof T]: T[P]}
-  const keys = Object.keys(mapOfEither) as (keyof T)[]
+  const keys = Object.keys(eitherMap) as (keyof T)[]
   for(const key of keys) {
-    const either = mapOfEither[key]
+    const either = eitherMap[key]
     if(either.isLeft())
       lefts[key] = either.left
     else

@@ -1,4 +1,4 @@
-import { Err, Ok, Result } from "../src"
+import { Err, Ok, Result } from "../src/result"
 
 function isNumber(value: unknown): Result<number> {
   return typeof value === 'number' ? new Ok(value) : new Err('Not a number')

@@ -1,4 +1,4 @@
-import { AsyncResult, tryAsyncResult } from "../src/index";
+import { AsyncEither, tryAsyncEither } from "../src/async-either";
 
 const goodQuestion = 'The Answer to the Ultimate Question of Life, the Universe, and Everything?'
 const badQuestion = 'What is that?'
@@ -9,8 +9,8 @@ async function impureAnswer(question: string): Promise<number> {
   throw 'Wrong question'
 }
 
-function pureAnswer(question: string): AsyncResult<number> {
-  return tryAsyncResult(() => impureAnswer(question))
+function pureAnswer(question: string): AsyncEither<unknown, number> {
+  return tryAsyncEither(() => impureAnswer(question))
 }
 
 pureAnswer(goodQuestion)
