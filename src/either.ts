@@ -9,6 +9,8 @@ export interface EitherContract<L, R> {
   chain<R_>(f: (r: R) => Either<L, R_>): Either<L, R_>
   mapL<L_>(f: (l: L) => L_): Either<L_, R>
   chainL<L_>(f: (l: L) => Either<L_, R>): Either<L_, R>
+  leftOrNull: L | null
+  rightOrNull: R | null
   leftOr(or: L): L
   rightOr(or: R): R
   leftOrThrow: L
@@ -38,6 +40,12 @@ export class Left<L, R> implements EitherContract<L, R> {
   }
   chainL<L_>(f: (l: L) => Either<L_, R>): Either<L_, R> {
     return f(this.left)
+  }
+  get leftOrNull(): L | null {
+    return this.left
+  }
+  get rightOrNull(): R | null {
+    return null
   }
   leftOr(or: L): L {
     return this.left
@@ -80,6 +88,12 @@ export class Right<L, R> implements EitherContract<L, R> {
   }
   chainL<L_>(f: (l: L) => Either<L_, R>): Either<L_, R> {
     return this as any as Right<L_, R>
+  }
+  get leftOrNull(): L | null {
+    return null
+  }
+  get rightOrNull(): R | null {
+    return this.right
   }
   leftOr(or: L): L {
     return or
