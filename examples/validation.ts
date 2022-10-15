@@ -1,4 +1,4 @@
-import { obj, has, str, len, arr, test, num, int, between, oneOf, lte, gt } from "../src/validation"
+import { obj, has, str, len, arr, test, num, int, between, oneOf, lte, gt, defined } from "../src/validation"
 
 console.log(obj(undefined))
 console.log(obj(null))
@@ -39,3 +39,12 @@ console.log(num(42).chain(gt(0)))
 
 console.log(str('baz').chain(oneOf(['foo', 'bar'])))
 console.log(str('foo').chain(oneOf(['foo', 'bar'] as const)))
+
+console.log(defined(undefined))
+console.log(defined(null))
+console.log(defined(''))
+console.log(defined({}))
+console.log(defined([]))
+console.log(defined('foo'))
+console.log(defined([42]))
+console.log(defined({foo: 42}))
