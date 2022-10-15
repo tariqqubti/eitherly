@@ -1,4 +1,4 @@
-import { obj, has, str, len, arr, test } from "../src/validation"
+import { obj, has, str, len, arr, test, num, int, between, oneOf, lte, gt } from "../src/validation"
 
 console.log(obj(undefined))
 console.log(obj(null))
@@ -21,3 +21,21 @@ console.log(arr([1, 2]).chain(len(1, 2)))
 
 console.log(str('foo').chain(test(/[0-9]/)))
 console.log(str('foo').chain(test(/foo/)))
+
+console.log(num('foo').chain(between(1, 10)))
+console.log(num(33).chain(between(1, 10)))
+console.log(num(5).chain(between(1, 10)))
+
+console.log(num('foo').chain(int))
+console.log(num(4.2).chain(int))
+console.log(num(42).chain(int))
+
+console.log(num(42).chain(lte(30)))
+console.log(num(42).chain(lte(30)))
+console.log(num(42).chain(lte(50)))
+
+console.log(num(-42).chain(gt(0)))
+console.log(num(42).chain(gt(0)))
+
+console.log(str('baz').chain(oneOf(['foo', 'bar'])))
+console.log(str('foo').chain(oneOf(['foo', 'bar'] as const)))

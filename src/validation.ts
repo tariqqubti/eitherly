@@ -12,6 +12,36 @@ export function num(value: unknown): Either<string, number> {
     : new Left(`Value must be a number`)
 }
 
+export function int(value: number): Either<string, number> {
+  return Number.isInteger(value)
+    ? new Right(value)
+    : new Left(`Value must be an integer`)
+}
+
+export function lte(bound: number) {
+  return function (value: number): Either<string, number> {
+    return value <= bound
+      ? new Right(value)
+      : new Left(`Value must be less than or equal to ${bound}`)
+  }
+}
+
+export function gt(bound: number) {
+  return function (value: number): Either<string, number> {
+    return value > bound
+      ? new Right(value)
+      : new Left(`Value must be greater than ${bound}`)
+  }
+}
+
+export function between(min: number, max: number) {
+  return function(value: number): Either<string, number> {
+    return value >= min && value <= max
+      ? new Right(value)
+      : new Left(`Value must be between ${min} and ${max}`)
+  }
+}
+
 export function str(value: unknown): Either<string, string> {
   return typeof value === 'string'
     ? new Right(value)
@@ -39,6 +69,14 @@ export function arr(value: unknown): Either<string, unknown[]> {
   return Array.isArray(value)
     ? new Right(value)
     : new Left(`Value must be an array`)
+}
+
+export function oneOf<T>(values: readonly T[]) {
+  return function (value: unknown): Either<string, T> {
+    return values.some(v => v === value)
+      ? new Right(value as T)
+      : new Left(`Value must be one of ${values.join(', ')}`)
+  }
 }
 
 export function hasOwnProperty<T extends {}, K extends PropertyKey>(value: T, key: K): value is T & Record<K, unknown> {
