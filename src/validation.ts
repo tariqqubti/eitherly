@@ -71,16 +71,18 @@ export function arr(value: unknown): Either<string, unknown[]> {
     : new Left(`Value must be an array`)
 }
 
+/** Left if value is `undefined`, `null`, empty `string`, empty `array` or empty `object` */
 export function defined(value: unknown): Either<string, boolean | symbol | number | bigint | string | object> {
   if(value === undefined || value === null)
     return new Left(`Value must not be undefined or null`)
-  if(typeof value === 'object' && !Object.keys(value).length)
-    return new Left(`Value must not be an empty array or object`)
   if(value === '')
     return new Left(`Value must not be an empty string`)
+  if(typeof value === 'object' && !Object.keys(value).length)
+    return new Left(`Value must not be an empty array or object`)
   return new Right(value)
 }
 
+/** Left if `value` is not one of `values` */
 export function oneOf<T>(values: readonly T[]) {
   return function (value: unknown): Either<string, T> {
     return values.some(v => v === value)

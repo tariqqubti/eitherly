@@ -2,6 +2,10 @@ import { AsyncEither } from "./async-either"
 
 export type Either<L, R> = Left<L, R> | Right<L, R>
 
+export type Err<T> = Left<unknown, T>
+export type Ok<T> = Right<unknown, T>
+export type Result<T> = Either<unknown, T>
+
 export interface EitherContract<L, R> {
   isLeft(): this is Left<L, R>
   isRight(): this is Right<L, R>
@@ -17,6 +21,15 @@ export interface EitherContract<L, R> {
   rightOrThrow: R
   use<T>(onLeft: (l: L) => T, onRight: (r: R) => T): T
   toAsync(): AsyncEither<L, R>
+
+  isErr(): this is Err<R>
+  isOk(): this is Ok<R>
+  errOrNull: L | null
+  okOrNull: R | null
+  errOr(or: L): L
+  okOr(or: R): R
+  errOrThrow: L
+  okOrThrow: R
 }
 
 export class Left<L, R> implements EitherContract<L, R> {
@@ -64,6 +77,31 @@ export class Left<L, R> implements EitherContract<L, R> {
   }
   toAsync(): AsyncEither<L, R> {
     return new AsyncEither(async () => this)
+  }
+
+  isErr(): this is Err<R> {
+    return true
+  }
+  isOk(): this is Ok<R> {
+    return false
+  }
+  get errOrNull(): L | null {
+    return this.left
+  }
+  get okOrNull(): R | null {
+    return null
+  }
+  errOr(or: L): L {
+    return this.left
+  }
+  okOr(or: R): R {
+    return or
+  }
+  get errOrThrow(): L {
+    return this.left
+  }
+  get okOrThrow(): R {
+    throw this.left
   }
 }
 
@@ -113,6 +151,31 @@ export class Right<L, R> implements EitherContract<L, R> {
   toAsync(): AsyncEither<L, R> {
     return new AsyncEither(async () => this)
   }
+
+  isErr(): this is Err<R> {
+    return false
+  }
+  isOk(): this is Ok<R> {
+    return true
+  }
+  get errOrNull(): L | null {
+    return null
+  }
+  get okOrNull(): R | null {
+    return this.right
+  }
+  errOr(or: L): L {
+    return or
+  }
+  okOr(or: R): R {
+    return this.right
+  }
+  get errOrThrow(): L {
+    throw this.right
+  }
+  get okOrThrow(): R {
+    return this.right
+  }
 }
 
 export function tryEither<T>(f: () => T): Either<unknown, T> {
@@ -123,14 +186,20 @@ export function tryEither<T>(f: () => T): Either<unknown, T> {
   }
 }
 
-export function collapseEither<E, T>(
-  eitherMap: {[P in keyof T]: Either<E, T[P]>}
+/**
+ * Converts a map of either to an either of map
+ * ```
+ * {foo: new Left('foo'), bar: new Right}
+ * ```
+ */
+export function toEitherOfMap<E, T>(
+  mapOfEither: {[P in keyof T]: Either<E, T[P]>}
 ): Either<{[P in keyof T]?: E}, {[P in keyof T]: T[P]}> {
   const lefts: {[P in keyof T]?: E} = {}
   const rights = {} as {[P in keyof T]: T[P]}
-  const keys = Object.keys(eitherMap) as (keyof T)[]
+  const keys = Object.keys(mapOfEither) as (keyof T)[]
   for(const key of keys) {
-    const either = eitherMap[key]
+    const either = mapOfEither[key]
     if(either.isLeft())
       lefts[key] = either.left
     else
@@ -139,4 +208,17 @@ export function collapseEither<E, T>(
   if(Object.keys(lefts).length)
     return new Left(lefts)
   return new Right(rights)
+}
+
+export function toEitherOfArray<E, T>(
+  arrayOfEither: Either<E, T>[],
+): Either<E[], T[]> {
+  const left: E[] = []
+  const right: T[] = []
+  for(const either of arrayOfEither) {
+    if(either.isLeft()) left.push(either.left)
+    else right.push(either.right)
+  }
+  if(left.length) return new Left(left)
+  return new Right(right)
 }

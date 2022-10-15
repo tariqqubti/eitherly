@@ -1,5 +1,7 @@
 import { Either, Left, Right } from "./either"
 
+export type AsyncResult<T> = AsyncEither<unknown, T>
+
 export class AsyncEither<L, R> {
   constructor(
     readonly run: () => Promise<Either<L, R>>
