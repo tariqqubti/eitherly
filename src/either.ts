@@ -38,9 +38,6 @@ export class Left<L, R> implements EitherContract<L, R> {
   constructor(
     readonly left: L,
   ) {}
-  get reason() {
-    return this.left
-  }
   isLeft(): this is Left<L, R> {
     return true
   }
@@ -84,6 +81,9 @@ export class Left<L, R> implements EitherContract<L, R> {
     return new AsyncEither(async () => this)
   }
 
+  get reason() {
+    return this.left
+  }
   isErr(): this is Err<R> {
     return true
   }
@@ -116,9 +116,6 @@ export class Right<L, R> implements EitherContract<L, R> {
   constructor(
     readonly right: R,
   ) {}
-  get value() {
-    return this.right
-  }
   isLeft(): this is Left<L, R> {
     return false
   }
@@ -162,6 +159,9 @@ export class Right<L, R> implements EitherContract<L, R> {
     return new AsyncEither(async () => this)
   }
 
+  get value() {
+    return this.right
+  }
   isErr(): this is Err<R> {
     return false
   }
