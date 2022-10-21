@@ -33,9 +33,14 @@ export interface EitherContract<L, R> {
 }
 
 export class Left<L, R> implements EitherContract<L, R> {
+  readonly kind1 = 'Left'
+  readonly kind2 = 'Err'
   constructor(
     readonly left: L,
   ) {}
+  get reason() {
+    return this.left
+  }
   isLeft(): this is Left<L, R> {
     return true
   }
@@ -106,9 +111,14 @@ export class Left<L, R> implements EitherContract<L, R> {
 }
 
 export class Right<L, R> implements EitherContract<L, R> {
+  readonly kind1 = 'Right'
+  readonly kind2 = 'Ok'
   constructor(
     readonly right: R,
   ) {}
+  get value() {
+    return this.right
+  }
   isLeft(): this is Left<L, R> {
     return false
   }
@@ -221,4 +231,12 @@ export function toEitherOfArray<E, T>(
   }
   if(left.length) return new Left(left)
   return new Right(right)
+}
+
+export function err<T>(reason: unknown): Err<T> {
+  return new Left(reason)
+}
+
+export function ok<T>(value: T): Ok<T> {
+  return new Right(value)
 }
