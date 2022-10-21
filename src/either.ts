@@ -188,11 +188,11 @@ export class Right<L, R> implements EitherContract<L, R> {
   }
 }
 
-export function tryEither<T>(f: () => T): Either<unknown, T> {
+export function tryResult<T>(f: () => T): Result<T> {
   try {
-    return new Right(f())
+    return ok(f())
   } catch(error) {
-    return new Left(error)
+    return err(error)
   }
 }
 

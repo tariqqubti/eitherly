@@ -1,4 +1,4 @@
-import { AsyncEither, tryAsyncEither } from "../src/async-either"
+import { AsyncEither, tryAsyncResult } from "../src/async-either"
 
 // Impure
 
@@ -37,7 +37,7 @@ class PersonRepo {
     readonly collection: Collection<Person>,
   ) {}
   findById(id: number): AsyncEither<unknown, Person> {
-    return tryAsyncEither(() => this.collection.findOne(person => person.id === id))
+    return tryAsyncResult(() => this.collection.findOne(person => person.id === id))
       .chain(AsyncEither.fromNullable('Not found'))
   }
 }
@@ -52,7 +52,7 @@ class PlanetRepo {
     readonly collection: Collection<Planet>,
   ) {}
   findById(id: number): AsyncEither<unknown, Planet> {
-    return tryAsyncEither(() => this.collection.findOne(planet => planet.id === id))
+    return tryAsyncResult(() => this.collection.findOne(planet => planet.id === id))
       .chain(AsyncEither.fromNullable('Not found'))
   }
 }

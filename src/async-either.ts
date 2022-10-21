@@ -1,4 +1,4 @@
-import { Either, Left, Right } from "./either"
+import { Either, err, Left, ok, Right } from "./either"
 
 export type AsyncResult<T> = AsyncEither<unknown, T>
 
@@ -49,12 +49,12 @@ export class AsyncEither<L, R> {
   }
 }
 
-export function tryAsyncEither<R>(f: () => Promise<R>): AsyncEither<unknown, R> {
+export function tryAsyncResult<R>(f: () => Promise<R>): AsyncResult<R> {
   return new AsyncEither(async () => {
     try {
-      return new Right(await f())
+      return ok(await f())
     } catch(error) {
-      return new Left(error)
+      return err(error)
     }
   })
 }
