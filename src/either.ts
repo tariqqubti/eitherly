@@ -196,6 +196,14 @@ export function tryResult<T>(f: () => T): Result<T> {
   }
 }
 
+export async function tryResultPromise<T>(f: () => Promise<T>): Promise<Result<T>> {
+  try {
+    return ok(await f())
+  } catch(error) {
+    return err(error)
+  }
+}
+
 /**
  * Converts a map of either to an either of map
  * ```
