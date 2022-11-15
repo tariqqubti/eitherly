@@ -1,3 +1,5 @@
 export * from "./either"
+export * from "./result"
 export * from "./async-either"
+export * from "./async-result"
 export * from "./validation"

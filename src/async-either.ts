@@ -1,6 +1,4 @@
-import { Either, err, Left, ok, Right } from "./either"
-
-export type AsyncResult<T> = AsyncEither<unknown, T>
+import { asyncTryEither, Either, Left, Right } from "./either"
 
 export class AsyncEither<L, R> {
   constructor(
@@ -16,6 +14,11 @@ export class AsyncEither<L, R> {
     return function(right: R | null | undefined): AsyncEither<L, R> {
       return new AsyncEither(async () => right ? new Right(right) : new Left(left))
     }
+  }
+  static tryCatch<T>(f: () => Promise<T>): AsyncEither<unknown, T> {
+    return new AsyncEither(
+      () => asyncTryEither(f)
+    )
   }
   map<R_>(f: (t: R) => R_): AsyncEither<L, R_> {
     return new AsyncEither(
@@ -47,14 +50,4 @@ export class AsyncEither<L, R> {
       }
     )
   }
-}
-
-export function tryAsyncResult<R>(f: () => Promise<R>): AsyncResult<R> {
-  return new AsyncEither(async () => {
-    try {
-      return ok(await f())
-    } catch(error) {
-      return err(error)
-    }
-  })
 }
